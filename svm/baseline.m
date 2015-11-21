@@ -15,6 +15,12 @@ nTest = size(Xtest,1);
 
 %% TODO Train baseline
 % TODO Set the hinge weight C=50 in the objective wTw/2+C?ih(yixi?w).
+
+% Trying PCA
+CUTOFF = 100;
+[coeff,score,latent] = pca(Xtrain);
+Xtrain = score(:,1:CUTOFF);
+
 select01 = (Ytrain==0)|(Ytrain==1);
 svm01 = svmtrain(Xtrain(select01,:),Ytrain(select01), ...
     'kernel_function', 'rbf','rbf_sigma',100);
@@ -29,6 +35,10 @@ svm13 = svmtrain(Xtrain(select13,:),Ytrain(select13), ...
 % When testing, use majority vote among the three classifiers: e.g., if 
 % the 0-1 classifier says 1, the 0-3 classifier says 3, and the 1-3 
 % classifier says 1, predict 1.
+
+% Try PCA
+Xtest = Xtest * coeff(:,1:CUTOFF);
+
 pred01 = svmclassify(svm01, Xtest);
 pred03 = svmclassify(svm03, Xtest);
 pred13 = svmclassify(svm13, Xtest);
