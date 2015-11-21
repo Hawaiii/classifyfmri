@@ -4,7 +4,7 @@
 % x,y,z: 3D coordinate of fMRI scans
 
 % 20% - valid csv
-% TODO (20+30)% - baseline svm
+% (20+30)% - baseline svm
 % TODO 100% - 66.7 accurancy
 % TODO extracredit
 
@@ -33,7 +33,8 @@ pred01 = svmclassify(svm01, Xtest);
 pred03 = svmclassify(svm03, Xtest);
 pred13 = svmclassify(svm13, Xtest);
 
-pred = ones(nTest, nClass)/3;
+pred = zeros(nTest, nClass);
+pred(:,1) = 1; %hack, autolab complains about sum not equaling 1
 pred((pred01==0) & (pred03 ==0), 1) = 1;
 pred((pred01==0) & (pred03 ==0), 2:3) = 0;
 pred((pred01==1) & (pred13 ==1), 1) = 0;
