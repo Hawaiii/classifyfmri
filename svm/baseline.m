@@ -23,13 +23,13 @@ Xtrain = score(:,1:CUTOFF);
 
 select01 = (Ytrain==0)|(Ytrain==1);
 svm01 = svmtrain(Xtrain(select01,:),Ytrain(select01), ...
-    'kernel_function', 'rbf','rbf_sigma',100);
+    'kernel_function', 'rbf','rbf_sigma',100,'boxconstraint',50);
 select03 = (Ytrain==0)|(Ytrain==3);
 svm03 = svmtrain(Xtrain(select03,:),Ytrain(select03), ...
-    'kernel_function', 'rbf','rbf_sigma',100);
+    'kernel_function', 'rbf','rbf_sigma',100,'boxconstraint',50);
 select13 = (Ytrain==1)|(Ytrain==3);
 svm13 = svmtrain(Xtrain(select13,:),Ytrain(select13), ...
-    'kernel_function', 'rbf','rbf_sigma',100);
+    'kernel_function', 'rbf','rbf_sigma',100,'boxconstraint',50);
 
 %% Test
 % When testing, use majority vote among the three classifiers: e.g., if 
