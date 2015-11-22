@@ -17,7 +17,7 @@ nTest = size(Xtest,1);
 % TODO Set the hinge weight C=50 in the objective wTw/2+C?ih(yixi?w).
 
 % Trying PCA
-CUTOFF = 100;
+CUTOFF = 150;
 [coeff,score,latent] = pca(Xtrain);
 Xtrain = score(:,1:CUTOFF);
 
