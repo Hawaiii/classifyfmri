@@ -12,6 +12,7 @@ load('../data/Train.mat');
 load('../data/Test.mat');
 nClass = size(unique(Ytrain),1);
 nTest = size(Xtest,1);
+nSubject = max(subjectsTrain(:));
 
 %% Train
 
@@ -20,12 +21,12 @@ CUTOFF = 50;
 [coeff,score,latent] = pca(Xtrain);
 trainavg = mean(Xtrain,1);
 Xtrain = score(:,1:CUTOFF);
-subClassifier = cell(1,size(subjects,1)); %An cell array
-for i = 1:size(subjects,1)
-	subID = subjects(i);
-% 	subID
-   	SubClassifier{1,subID} = fitcknn(Xtrain(subjectsTrain(:, 1) == subID, :)...
-        ,Ytrain(subjectsTrain(:, 1) == subID, 1),'NumNeighbors',3);
+SubClassifier = cell(1, nSubject); %An cell array
+for subID = 1:nSubject
+    idx = (subjectsTrain==subID);
+    if sum(idx) > 0
+       	SubClassifier{1,subID} = fitcknn(Xtrain(idx, :),Ytrain(idx, 1),'NumNeighbors',3);
+    end
 end
 
 % SubClassifier
@@ -34,14 +35,14 @@ end
 % rloss = resubLoss(mdl)
 % cvmdl = crossval(mdl);
 % kloss = kfoldLoss(cvmdl)
-Xtest = (Xtest-trainavg) * coeff(:,1:CUTOFF);
+Xtest = (Xtest-repmat(trainavg,size(Xtest,1),1)) * coeff(:,1:CUTOFF);
 pred013 = zeros(nTest,1);
 for i=1:nTest
-	classifier = SubClassifier{subjectTest(i,1)};
-	pred013(i,1) = predict(classifier,Xtest(i,:))
+	classifier = SubClassifier{subjectsTest(i,1)};
+	pred013(i,1) = predict(classifier,Xtest(i,:));
 end
 pred = zeros(nTest, nClass);
 pred((pred013==0),1) = 1;
 pred((pred013==1),2) = 1;
 pred((pred013==3),3) = 1;
-csvwrite('prediction.csv',pred)
+csvwrite('prediction.csv',pred);
