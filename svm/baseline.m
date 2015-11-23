@@ -13,12 +13,12 @@ load('../data/Test.mat');
 nClass = size(unique(Ytrain),1);
 nTest = size(Xtest,1);
 
-%% TODO Train baseline
-% TODO Set the hinge weight C=50 in the objective wTw/2+C?ih(yixi?w).
+%% Train baseline
 
 % Trying PCA
-CUTOFF = 150;
+CUTOFF = 100;
 [coeff,score,latent] = pca(Xtrain);
+trainCenter = mean(Xtrain,1);
 Xtrain = score(:,1:CUTOFF);
 
 select01 = (Ytrain==0)|(Ytrain==1);
@@ -37,7 +37,7 @@ svm13 = svmtrain(Xtrain(select13,:),Ytrain(select13), ...
 % classifier says 1, predict 1.
 
 % Try PCA
-Xtest = Xtest * coeff(:,1:CUTOFF);
+Xtest = (Xtest-trainCenter) * coeff(:,1:CUTOFF);
 
 pred01 = svmclassify(svm01, Xtest);
 pred03 = svmclassify(svm03, Xtest);
