@@ -13,46 +13,35 @@ load('../data/Test.mat');
 nClass = size(unique(Ytrain),1);
 nTest = size(Xtest,1);
 
-%% TODO Train baseline
-% TODO Set the hinge weight C=50 in the objective wTw/2+C?ih(yixi?w).
+%% Train
 
 % Trying PCA
 CUTOFF = 50;
 [coeff,score,latent] = pca(Xtrain);
+trainavg = mean(Xtrain,1);
 Xtrain = score(:,1:CUTOFF);
+subClassifier = cell(1,size(subjects,1)); %An cell array
 for i = 1:size(subjects,1)
-	subID = subjects(i)
-	subID
-   	SubClassifier{subID} = fitcknn(Xtrain(subjectsTrain(:, 1) == subID, :),Ytrain(subjectsTrain(:, 1) == subID, 1),'NumNeighbors',3);
+	subID = subjects(i);
+% 	subID
+   	SubClassifier{1,subID} = fitcknn(Xtrain(subjectsTrain(:, 1) == subID, :)...
+        ,Ytrain(subjectsTrain(:, 1) == subID, 1),'NumNeighbors',3);
 end
 
-SubClassifier
+% SubClassifier
 % mdl = fitcknn(Xtrain,Ytrain,'NumNeighbors',1);
 % mdl
 % rloss = resubLoss(mdl)
 % cvmdl = crossval(mdl);
 % kloss = kfoldLoss(cvmdl)
-Xtest = Xtest * coeff(:,1:CUTOFF);
+Xtest = (Xtest-trainavg) * coeff(:,1:CUTOFF);
+pred013 = zeros(nTest,1);
 for i=1:nTest
-	classifier = SubClassifier(subjectsTest(i,1))
-	% throwing error
-	% 	Error using predict (line 84)
-	% Systems of cell class cannot be used with the "predict" command. Convert the system to an identified model first, such as by using the "idss"
-	% command.
-
-	% Error in knn (line 39)
-	% 	pred013(i) = predict(classifier,Xtest(i,:))
-	pred013(i) = predict(classifier,Xtest(i,:))
+	classifier = SubClassifier{subjectTest(i,1)};
+	pred013(i,1) = predict(classifier,Xtest(i,:))
 end
-% pred013 = predict(mdl,Xtest);
 pred = zeros(nTest, nClass);
-% pred(:,1) = 1;
 pred((pred013==0),1) = 1;
-pred((pred013==0),2:3) = 0;
 pred((pred013==1),2) = 1;
-pred((pred013==1),1) = 0;
-pred((pred013==1),3) = 0;
 pred((pred013==3),3) = 1;
-pred((pred013==3),1:2) = 0;
-pred;
 csvwrite('prediction.csv',pred)
