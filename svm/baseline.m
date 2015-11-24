@@ -8,18 +8,20 @@
 % TODO 100% - 66.7 accurancy
 % TODO extracredit
 
-load('../data/Train.mat');
-load('../data/Test.mat');
+load('../data/FSTrain.mat');
+load('../data/FSTest.mat');
+% load('../data/Train.mat');
+% load('../data/Test.mat');
 nClass = size(unique(Ytrain),1);
 nTest = size(Xtest,1);
 
 %% Train baseline
 
 % Trying PCA
-CUTOFF = 100;
-[coeff,score,latent] = pca(Xtrain);
-trainCenter = mean(Xtrain,1);
-Xtrain = score(:,1:CUTOFF);
+% CUTOFF = 100;
+% [coeff,score,latent] = pca(Xtrain);
+% trainCenter = mean(Xtrain,1);
+% Xtrain = score(:,1:CUTOFF);
 
 select01 = (Ytrain==0)|(Ytrain==1);
 svm01 = svmtrain(Xtrain(select01,:),Ytrain(select01), ...
@@ -37,7 +39,7 @@ svm13 = svmtrain(Xtrain(select13,:),Ytrain(select13), ...
 % classifier says 1, predict 1.
 
 % Try PCA
-Xtest = (Xtest-trainCenter) * coeff(:,1:CUTOFF);
+% Xtest = (Xtest-trainCenter) * coeff(:,1:CUTOFF);
 
 pred01 = svmclassify(svm01, Xtest);
 pred03 = svmclassify(svm03, Xtest);

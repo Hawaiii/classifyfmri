@@ -3,8 +3,8 @@ load('Test.mat');
 nDim = size(Xtrain,2);
 
 %% Smooth
-SMOOTHBANDWIDTH = 9;
-SMOOTHSIGMA = 2;
+SMOOTHBANDWIDTH = 10;
+SMOOTHSIGMA = 1;
 loc = [x y z];
 weight = zeros(nDim, nDim);
 for i = 1:nDim
@@ -12,10 +12,11 @@ for i = 1:nDim
     dist = pdist2(pos, loc);
     window = dist < SMOOTHBANDWIDTH;
     weight(i,:) = window.*(gaussmf(dist, [SMOOTHSIGMA 0]));
+    weight(i,:) = weight(i,:)/sum(weight(i,:));
 end
 
-XtrainS = Xtrain*weight;
-XtestS = Xtest*weight;
+XtrainS = Xtrain*weight';
+XtestS = Xtest*weight';
 
 %% Voxel Discrimination Over 2 Time Chunk
 NUMCHUNK = 2;
@@ -37,6 +38,7 @@ CUTOFF = 200;
 trainCenter = mean(XtrainTS,1);
 Xtrain = score(:,1:CUTOFF);
 
+% Xtest = XtestTS*coeff(:,1:CUTOFF);
 Xtest = (XtestTS-repmat(trainCenter, size(XtestTS,1),1))*coeff(:,1:CUTOFF);
 
 save('FSTrain.mat','Xtrain','Ytrain','eventsTrain','subjectsTrain','x','y','z');
