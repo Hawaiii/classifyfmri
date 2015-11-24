@@ -37,7 +37,7 @@ CUTOFF = 200;
 trainCenter = mean(XtrainTS,1);
 Xtrain = score(:,1:CUTOFF);
 
-Xtest = (XtestTS-repmat(trainCenter, size(XtestTS,1),1))*coeff;
+Xtest = (XtestTS-repmat(trainCenter, size(XtestTS,1),1))*coeff(:,1:CUTOFF);
 
 save('FSTrain.mat','Xtrain','Ytrain','eventsTrain','subjectsTrain','x','y','z');
 save('FSTest.mat','Xtest','eventsTest','subjectsTest');
