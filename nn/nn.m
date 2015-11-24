@@ -10,7 +10,7 @@ Ytrain(Ytrain == 3) = 2;
 inputs = Xtrain';
 targets = Ytrain';
 
-bestp = 0;
+bestp = realmax;
 for i = 1:300
 % Create a Fitting Network
 hiddenLayerSize = 10;
@@ -31,7 +31,7 @@ performance = perform(net,targets,outputs);
  
 % View the Network
 % view(net)
-if performance > bestp,
+if performance < bestp,
     load('../data/Test.mat');
     nTest = size(Xtest,1);
     nClass = 3;
@@ -42,8 +42,8 @@ if performance > bestp,
     outputTest(outputTest >= 1.5) = 2;
 
     outputTest = outputTest';
-    pred = zeros(nTest, nClass);
-    pred(:,1) = 1; %hack, autolab complains about sum not equaling 1
+    pred = ones(nTest, nClass)*0.33;
+    pred(:,1) = 0.34; %hack, autolab complains about sum not equaling 1
     pred(outputTest==1, 1) = 0;
     pred(outputTest==1, 2) = 1;
     pred(outputTest==1, 3) = 0;

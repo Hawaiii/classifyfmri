@@ -36,6 +36,7 @@ for pcacutoff = PCACUTOFF
 
                 if strcmp(svmkernelfun,'rbf')
                     for svmrbfsig = SVMRBFSIG
+                        try 
                         select01 = trainInd & ((Ytrain==0)|(Ytrain==1));
                         svm01 = svmtrain(Xtrain(select01,:),Ytrain(select01), ...
                         'kernel_function', svmkernelfun,'rbf_sigma',svmrbfsig,'boxconstraint',svmboxc,'options',svmoption);
@@ -73,9 +74,13 @@ for pcacutoff = PCACUTOFF
                             bestParams = Params{1,ParamsIdx};
                         end
                         ParamsIdx = ParamsIdx+1;
+                        catch
+                            1
+                        end
                     end
                     
                 else
+                try
                 select01 = trainInd & ((Ytrain==0)|(Ytrain==1));
                 svm01 = svmtrain(Xtrain(select01,:),Ytrain(select01), ...
                 'kernel_function', svmkernelfun,'boxconstraint',svmboxc,'options',svmoption);
@@ -113,6 +118,9 @@ for pcacutoff = PCACUTOFF
                     bestParams = Params{1,ParamsIdx};
                 end
                 ParamsIdx = ParamsIdx+1;
+                catch
+                    1
+                end
                 end
             end
         end
