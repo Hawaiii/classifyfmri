@@ -2,7 +2,7 @@ load('Train.mat');
 load('Test.mat');
 nDim = size(Xtrain,2);
 
-%% Smooth
+%% Spatial Smoothing
 SMOOTHBANDWIDTH = 10;
 SMOOTHSIGMA = 1;
 loc = [x y z];
@@ -32,14 +32,16 @@ XtestTS(firstScan, 1:nDim) = XtestS(firstScan, :);
 secondScan = (eventsTest >= 352);
 XtestTS(secondScan, nDim+1:end) = XtestS(secondScan,:);
 
-%% PCA
-CUTOFF = 200;
-[coeff,score,latent] = pca(XtrainTS);
-trainCenter = mean(XtrainTS,1);
-Xtrain = score(:,1:CUTOFF);
+Xtrain = XtrainTS;
+Xtest = XtestTS;
 
-% Xtest = XtestTS*coeff(:,1:CUTOFF);
-Xtest = (XtestTS-repmat(trainCenter, size(XtestTS,1),1))*coeff(:,1:CUTOFF);
+%% PCA
+% CUTOFF = 200;
+% [coeff,score,latent] = pca(XtrainTS);
+% trainCenter = mean(XtrainTS,1);
+% Xtrain = score(:,1:CUTOFF);
+
+% Xtest = (XtestTS-repmat(trainCenter, size(XtestTS,1),1))*coeff(:,1:CUTOFF);
 
 save('FSTrain.mat','Xtrain','Ytrain','eventsTrain','subjectsTrain','x','y','z');
 save('FSTest.mat','Xtest','eventsTest','subjectsTest');
