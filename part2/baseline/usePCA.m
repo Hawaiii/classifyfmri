@@ -13,8 +13,8 @@ NDATA = size(provideData,1);
 pred = zeros(1000, 2731); % result prediction to write
 
 %% Do prediction here: using PCA
-CUTOFF = 50;
-K = 20;
+CUTOFF = 100;
+K = 3;
 
 % project train data onto pca
 completeData = vertcat(Xtrain, Xtest);
