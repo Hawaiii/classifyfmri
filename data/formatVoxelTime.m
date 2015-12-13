@@ -1,6 +1,6 @@
 load('Test.mat');
 load('Train.mat');
-load('voxelTimeTrain2.mat');
+load('voxelTimeTrain.mat');
 
 X3 = [];
 Y3 = [];
@@ -12,7 +12,7 @@ for i = 1:size(Xtest,2)
 end
 X3 = vertcat(X3, X);
 Y3 = vertcat(Y3, Y);
-save('../../data/voxelTimeTrainTest.mat', 'X3', 'Y3');
+save('../../data/voxelTimeTestTrain.mat', 'X3', 'Y3');
 % X2=[]
 % Y2=[]
 % for i = 1:size(provideData,2)
