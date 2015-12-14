@@ -11,4 +11,4 @@ pz = z(provideIdx);
 
 scatter3(mx,my,mz,'b');
 hold on
-scatter3(px,py,pz,'r.');
+scatter3(px,py,pz,'r');
