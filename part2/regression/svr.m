@@ -14,10 +14,12 @@ load('missIdx.mat');
 all_data.X = vertcat(Xtrain(:,provideIdx), Xtest(:,provideIdx));
 all_data.yall = vertcat(Xtrain(:,missIdx), Xtest(:, missIdx));
 p_data.X = provideData;
+p_data.y = zeros(size(p_data.X,1),1);
 
 n_data = size(all_data.X,1);
 
 pred = zeros(1000, size(missIdx,2));
+test_prec = zeros(1,size(missIdx,2));
 
 for si = 1:size(missIdx,2)
 select = missIdx(si);
@@ -35,7 +37,7 @@ tst_data.X = all_data.X(train_cutoff+1:end,:);
 tst_data.y = all_data.y(train_cutoff+1:end,:);
 
 %% Scale the data to [0,1]
-[trn_data, tst_data, jn2] = scaleSVM(trn_data, tst_data, trn_data, 0, 1);
+[trn_data, tst_data, p_data] = scaleSVM(trn_data, tst_data, p_data, 0, 1);
 
 %% TODO Perform model selection
 param.s = 3; 					% epsilon SVR
@@ -104,18 +106,22 @@ model = svmtrain(trn_data.y, trn_data.X, optparam.libsvm);
 
 %% Mean square error
 % MSE for test samples
-[y_hat, Acc, projection] = svmpredict(tst_data.y, tst_data.X, model);
+[y_hat, Acc, ~] = svmpredict(tst_data.y, tst_data.X, model);
 MSE_Test = mean((y_hat-tst_data.y).^2);
 NRMS_Test = sqrt(MSE_Test) / std(tst_data.y);
+test_prec(si) = MSE_Train;
 
 % MSE for training samples
-[y_hat, Acc, projection] = svmpredict(trn_data.y, trn_data.X, model);
-MSE_Train = mean((y_hat-trn_data.y).^2);
-NRMS_Train = sqrt(MSE_Train) / std(trn_data.y);
+% [y_hat, Acc, ~] = svmpredict(trn_data.y, trn_data.X, model);
+% MSE_Train = mean((y_hat-trn_data.y).^2);
+% NRMS_Train = sqrt(MSE_Train) / std(trn_data.y);
 
 % predict
-[y_hat, Acc, projection] = svmpredict(zeros(size(p_data.X,1),1),p_data.X,model);
+[y_hat, Acc, ~] = svmpredict(p_data.y,p_data.X,model);
 pred(:,si) = y_hat(:);
 
+if mod(si,10)
+    csvwrite('test_prec.csv','MSE_Train');
+    csvwrite('prediction.csv',pred); 
 end
-csvwrite('prediction.csv',pred); 
+end
