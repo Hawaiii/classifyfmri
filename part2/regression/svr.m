@@ -13,7 +13,6 @@ load('missIdx.mat');
 
 all_data.X = vertcat(Xtrain(:,provideIdx), Xtest(:,provideIdx));
 all_data.yall = vertcat(Xtrain(:,missIdx), Xtest(:, missIdx));
-all_data.y = all_data.yall(:,select);
 p_data.X = provideData;
 
 n_data = size(all_data.X,1);
@@ -24,8 +23,10 @@ for si = 1:size(missIdx,2)
 select = missIdx(si);
 train_ratio = 0.95;
 
+all_data.y = all_data.yall(:,select);
+
 idx_permute = randperm(n_data);
-train_cutoff = round((1-train_ratio)*n_data);
+train_cutoff = round(train_ratio*n_data);
 
 trn_data.X = all_data.X(1:train_cutoff,:);
 trn_data.y = all_data.y(1:train_cutoff,:);
