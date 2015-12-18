@@ -4,8 +4,8 @@ load('../data/Train.mat')
 load('../data/Test.mat')
 load('../data/Ytest.mat')
 
-X_new = csvread('X_new_1.csv');
-label = 1;
+X_new = csvread('X_new_all.csv');
+label = 3;
 
 trainSelect = Ytrain == label;
 testSelect = Ytest == label;
