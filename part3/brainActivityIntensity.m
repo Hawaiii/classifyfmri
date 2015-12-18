@@ -3,9 +3,9 @@
 
 % subjectID = 6; %1-4,6-28
 label = 3; % 0, 1, 3
-load('../data/Train.mat');
-load('../data/Test.mat');
-load('../data/YTest.mat');
+% load('../data/Train.mat');
+% load('../data/Test.mat');
+% load('../data/YTest.mat');
 
 % trainSelect = subjectsTrain == subjectID;
 % testSelect = subjectsTest == subjectID;
